@@ -9,7 +9,7 @@
 ## Machine Learing/AI
 ### Books
 1. Reinforcement Learning
-2. Deep Learning
+2. Deep Learning ^refdeeplearningbook
 3. Learning from Data
 4. An Introduction to Genetic Algorithms
 5. Advances in Financial Machine Learning
