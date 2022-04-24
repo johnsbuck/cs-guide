@@ -225,6 +225,71 @@ tsne.fit(X)
 Y = tsne.transform(X)
 ```
 
+## Clustering
+### [K-Means](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+> [!INFO]- Tags
+> #k-means 
+
+`sklearn.cluster.KMeans(n_clusters=8, ...)`
+
+K-Means clustering.
+
+#### Parameters
+* n_clusters : int, default=8
+	* The number of clusters to form as well as the number of centroids to generate.
+
+#### Methods
+`fit(X, y=None, sample_weight=None)`
+Compute k-means clustering with X.
+
+`predict(X, sample_weight=None)`
+Predict the closest cluster each sample in X belongs to.
+
+`transform(X)`
+Transform X to a cluster-distance space.
+
+### [K-Nearest Neighbor](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+> [!INFO]- Tags
+> #knn #k-nearest-neighbor #kneighborclassifier
+
+`sklearn.neighbors.KNeighborsClassifier(n_neighbors=5)`
+
+Classifier implementing the k-nearest neighbors vote.
+
+### Parameters
+* n_neighbors : int, default=5
+	* Number of neighbors to use by default for [`kneighbors`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier.kneighbors "sklearn.neighbors.KNeighborsClassifier.kneighbors") queries.
+
+### Methods
+`fit(X, y)`
+Fit the k-nearest neighbors classifier from the training dataset.
+
+`predict(X)`
+Predict the class labels for the provided data.
+
+`kneighbors(X=None, n_neighbors=None, return_distance=True)`
+Finds the K-Neighbor of a point. If a point is not provided, neighbors of each indexed point are returned.
+
+### Affinity Propogation
+> [!INFO]- Tags
+> #affinity-propogation
+
+`sklearn.cluster.AffinityPropogation(damping=0.5)`
+
+Affinity Propogation
+
+#### Parameters
+* damping : float, default=0.5
+	* Damping factor in the range `[0.5, 1.0)` is the extent to which the current value is maintained relative to incoming values (weighted 1 - damping).
+	* This in order to avoid numerical oscillations when updating these values (messages).
+
+### Methods
+`fit(X)`
+Fit the clustering from features, or affinity matrix.
+
+`predict(X)`
+Predict the closest cluster each sample in X belongs to.
+
 ## A Basic Example
 > [!INFO]- References
 > [datacamp.com](https://www.datacamp.com/cheat-sheet/scikit-learn-cheat-sheet-python-machine-learning) [[datacamp-scikit-learn.pdf]]

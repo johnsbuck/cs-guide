@@ -94,3 +94,4 @@ We can repeat the process for $\hat{X}_{k}$ as we did with the first principal c
 $$
 = argmax \frac{w^{T}\hat{X}^{T}_{k}\hat{X}_{k}w}{w^Tw}
 $$
+

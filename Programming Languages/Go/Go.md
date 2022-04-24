@@ -1404,3 +1404,304 @@ Returns s with all Unicode letters mapped to their upper case.
 ### [ContainsAny](https://pkg.go.dev/strings#ContainsAny)
 `func ContainsAny(s, chars string) bool`
 Returns `True` if any Unicode code points in `chars` are within `s`.
+## sort (-> [doc](https://pkg.go.dev/sort))
+Provides primitives for sorting slices and user-defined collections.
+
+### Basic Sort
+For a given struct `T`, you need to define a type for an array or collection of `T` called `S`. 
+  * `type T struct { ...`
+  * `type S []T`
+A basic sort uses 3 methods defined for a given struct:
+  * `func (a S) Len() int`
+  * `func (a S) Swap(i, j int)`
+  * `func (a S) Less (i, j int) bool`
+
+#### Simple Method
+```go
+a := []T{
+	...
+}
+
+sort.Slice(a, func(i, j int) bool {
+	return a[i].Value > a[j].Value
+})
+```
+
+#### Example
+```go
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+type Person struct {
+	Name string
+	Age  int
+}
+
+func (p Person) String() string {
+	return fmt.Sprintf("%s: %d", p.Name, p.Age)
+}
+
+// ByAge implements sort.Interface for []Person based on
+// the Age field.
+type ByAge []Person
+
+func (a ByAge) Len() int           { return len(a) }
+func (a ByAge) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByAge) Less(i, j int) bool { return a[i].Age < a[j].Age }
+
+func main() {
+	people := []Person{
+		{"Bob", 31},
+		{"John", 42},
+		{"Michael", 17},
+		{"Jenny", 26},
+	}
+
+	fmt.Println(people)
+	// There are two ways to sort a slice. First, one can define
+	// a set of methods for the slice type, as with ByAge, and
+	// call sort.Sort. In this first example we use that technique.
+	sort.Sort(ByAge(people))
+	fmt.Println(people)
+
+	// The other way is to use sort.Slice with a custom Less
+	// function, which can be provided as a closure. In this
+	// case no methods are needed. (And if they exist, they
+	// are ignored.) Here we re-sort in reverse order: compare
+	// the closure with ByAge.Less.
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Age > people[j].Age
+	})
+	fmt.Println(people)
+}
+```
+
+### SortKeys
+Sort by a later defined key instead of a specific comparable in the struct.
+
+```go
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+// A couple of type definitions to make the units clear.
+type earthMass float64
+type au float64
+
+// A Planet defines the properties of a solar system object.
+type Planet struct {
+	name     string
+	mass     earthMass
+	distance au
+}
+
+// By is the type of a "less" function that defines the ordering of its Planet arguments.
+type By func(p1, p2 *Planet) bool
+
+// Sort is a method on the function type, By, that sorts the argument slice according to the function.
+func (by By) Sort(planets []Planet) {
+	ps := &planetSorter{
+		planets: planets,
+		by:      by, // The Sort method's receiver is the function (closure) that defines the sort order.
+	}
+	sort.Sort(ps)
+}
+
+// planetSorter joins a By function and a slice of Planets to be sorted.
+type planetSorter struct {
+	planets []Planet
+	by      func(p1, p2 *Planet) bool // Closure used in the Less method.
+}
+
+// Len is part of sort.Interface.
+func (s *planetSorter) Len() int {
+	return len(s.planets)
+}
+
+// Swap is part of sort.Interface.
+func (s *planetSorter) Swap(i, j int) {
+	s.planets[i], s.planets[j] = s.planets[j], s.planets[i]
+}
+
+// Less is part of sort.Interface. It is implemented by calling the "by" closure in the sorter.
+func (s *planetSorter) Less(i, j int) bool {
+	return s.by(&s.planets[i], &s.planets[j])
+}
+
+var planets = []Planet{
+	{"Mercury", 0.055, 0.4},
+	{"Venus", 0.815, 0.7},
+	{"Earth", 1.0, 1.0},
+	{"Mars", 0.107, 1.5},
+}
+
+// ExampleSortKeys demonstrates a technique for sorting a struct type using programmable sort criteria.
+func main() {
+	// Closures that order the Planet structure.
+	name := func(p1, p2 *Planet) bool {
+		return p1.name < p2.name
+	}
+	mass := func(p1, p2 *Planet) bool {
+		return p1.mass < p2.mass
+	}
+	distance := func(p1, p2 *Planet) bool {
+		return p1.distance < p2.distance
+	}
+	decreasingDistance := func(p1, p2 *Planet) bool {
+		return distance(p2, p1)
+	}
+
+	// Sort the planets by the various criteria.
+	By(name).Sort(planets)
+	fmt.Println("By name:", planets)
+
+	By(mass).Sort(planets)
+	fmt.Println("By mass:", planets)
+
+	By(distance).Sort(planets)
+	fmt.Println("By distance:", planets)
+
+	By(decreasingDistance).Sort(planets)
+	fmt.Println("By decreasing distance:", planets)
+}
+```
+
+### SortMultiKeys
+Sort by multiple keys at a given time.
+
+```go
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+// A Change is a record of source code changes, recording user, language, and delta size.
+type Change struct {
+	user     string
+	language string
+	lines    int
+}
+
+type lessFunc func(p1, p2 *Change) bool
+
+// multiSorter implements the Sort interface, sorting the changes within.
+type multiSorter struct {
+	changes []Change
+	less    []lessFunc
+}
+
+// Sort sorts the argument slice according to the less functions passed to OrderedBy.
+func (ms *multiSorter) Sort(changes []Change) {
+	ms.changes = changes
+	sort.Sort(ms)
+}
+
+// OrderedBy returns a Sorter that sorts using the less functions, in order.
+// Call its Sort method to sort the data.
+func OrderedBy(less ...lessFunc) *multiSorter {
+	return &multiSorter{
+		less: less,
+	}
+}
+
+// Len is part of sort.Interface.
+func (ms *multiSorter) Len() int {
+	return len(ms.changes)
+}
+
+// Swap is part of sort.Interface.
+func (ms *multiSorter) Swap(i, j int) {
+	ms.changes[i], ms.changes[j] = ms.changes[j], ms.changes[i]
+}
+
+// Less is part of sort.Interface. It is implemented by looping along the
+// less functions until it finds a comparison that discriminates between
+// the two items (one is less than the other). Note that it can call the
+// less functions twice per call. We could change the functions to return
+// -1, 0, 1 and reduce the number of calls for greater efficiency: an
+// exercise for the reader.
+func (ms *multiSorter) Less(i, j int) bool {
+	p, q := &ms.changes[i], &ms.changes[j]
+	// Try all but the last comparison.
+	var k int
+	for k = 0; k < len(ms.less)-1; k++ {
+		less := ms.less[k]
+		switch {
+		case less(p, q):
+			// p < q, so we have a decision.
+			return true
+		case less(q, p):
+			// p > q, so we have a decision.
+			return false
+		}
+		// p == q; try the next comparison.
+	}
+	// All comparisons to here said "equal", so just return whatever
+	// the final comparison reports.
+	return ms.less[k](p, q)
+}
+
+var changes = []Change{
+	{"gri", "Go", 100},
+	{"ken", "C", 150},
+	{"glenda", "Go", 200},
+	{"rsc", "Go", 200},
+	{"r", "Go", 100},
+	{"ken", "Go", 200},
+	{"dmr", "C", 100},
+	{"r", "C", 150},
+	{"gri", "Smalltalk", 80},
+}
+
+// ExampleMultiKeys demonstrates a technique for sorting a struct type using different
+// sets of multiple fields in the comparison. We chain together "Less" functions, each of
+// which compares a single field.
+func main() {
+	// Closures that order the Change structure.
+	user := func(c1, c2 *Change) bool {
+		return c1.user < c2.user
+	}
+	language := func(c1, c2 *Change) bool {
+		return c1.language < c2.language
+	}
+	increasingLines := func(c1, c2 *Change) bool {
+		return c1.lines < c2.lines
+	}
+	decreasingLines := func(c1, c2 *Change) bool {
+		return c1.lines > c2.lines // Note: > orders downwards.
+	}
+
+	// Simple use: Sort by user.
+	OrderedBy(user).Sort(changes)
+	fmt.Println("By user:", changes)
+
+	// More examples.
+	OrderedBy(user, increasingLines).Sort(changes)
+	fmt.Println("By user,<lines:", changes)
+
+	OrderedBy(user, decreasingLines).Sort(changes)
+	fmt.Println("By user,>lines:", changes)
+
+	OrderedBy(language, increasingLines).Sort(changes)
+	fmt.Println("By language,<lines:", changes)
+
+	OrderedBy(language, increasingLines, user).Sort(changes)
+	fmt.Println("By language,<lines,user:", changes)
+}
+```
+
+### Basic Type Sorts
+| Type     | Sort Function                | Sort Check Function                        |
+| -------- | ---------------------------- | ------------------------------------------ |
+| `float`  | `sort.Float64s(x []float64)` | `sort.Float64sAreSorted(x []float64) bool` |
+| `int`    | `sort.Ints(x []int)`         | `sort.IntsAreSorted(x []int) bool`         |
+| `string` | `sort.String(x []string)`    | `sort.StringsAreSorted(x []string) bool`   |

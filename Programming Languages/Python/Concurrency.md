@@ -9,7 +9,44 @@ tags:
 > [!INFO]- References
 > [LeetCode Post](https://leetcode.com/problems/print-in-order/discuss/335939/5-Python-threading-solutions-(Barrier-Lock-Event-Semaphore-Condition)-with-explanation)
 
-## Example Problem
+## Threading
+Python's main package for concurrency and multi-threading is `threading`.
+
+```python
+import threading
+
+
+def print_odd(num):
+	for i in range(num):
+		print(i * 2 + 1)
+
+
+def print_even(num):
+	for i in range(num):
+		print(i * 2)
+
+
+def main():
+	t1 = threading.Thread(target=print_odd, args=(10,))
+	t2 = threading.Thread(tearget=print_even, args=(10,))
+
+	# Start threads
+	t1.start()
+	t2.start()
+
+	# Wait until threads finish execution
+	t1.join()
+	t2.join()
+
+	print("Done")
+
+
+if __name__ == "__main__":
+	main()
+```
+
+## Concurrency Patterns
+### Example Problem
 You are given a class, `Foo`, that has 3 functions:
 
  * `first(printFirst: Callable)`
@@ -18,10 +55,10 @@ You are given a class, `Foo`, that has 3 functions:
 
 Design a mechanism and modify the program to ensure that `printSecond()` executes after `printFirst()` and `printThird()` executes after `printSecond()`.
 
-## [Barrier](https://docs.python.org/3/library/threading.html#barrier-objects)
+### [Barrier](https://docs.python.org/3/library/threading.html#barrier-objects)
 A #barrier forces a thread to wait for all parties to call the Barrier object. Once all parties call the Barrier to wait, they are all released simultaneously.
 
-### Solution
+#### Solution
 ```python
 from threading import Barrier
 
@@ -44,14 +81,14 @@ class Foo:
         printThird()
 ```
 
-## [ Lock](https://docs.python.org/3/library/threading.html#lock-objects)
+### [ Lock](https://docs.python.org/3/library/threading.html#lock-objects)
 A primitive #lock is a synchronization primitive that is not owned by a particular thread when locked. In Python, it is currently the lowest level synchronization primitive available, implemented directly by the [`_thread`](https://docs.python.org/3/library/_thread.html#module-_thread "_thread: Low-level threading API.") extension module.
 
 A primitive lock is in one of two states, “locked” or “unlocked”. It is created in the unlocked state. When the state is unlocked, acquiring the lock sets it to the locked state. When the state is locked, acquiring the lock blocks until it is released.
 
 A lock be considered equivalent to a ***mutex***.
 
-### Solution
+#### Solution
 ```python
 from threading import Lock
 
@@ -76,10 +113,10 @@ class Foo:
             printThird()
 ```
 
-## [Event](https://docs.python.org/3/library/threading.html#event-objects)
+### [Event](https://docs.python.org/3/library/threading.html#event-objects)
 An #event allows two threads to communicate by having one set the event and having the other wait for the thread.
 
-### Solution
+#### Solution
 ```python
 from threading import Event
 
@@ -101,12 +138,12 @@ class Foo:
         printThird()
 ```
 
-## [Semaphore](https://docs.python.org/3/library/threading.html#semaphore-objects)
+### [Semaphore](https://docs.python.org/3/library/threading.html#semaphore-objects)
 A #semaphore has an internal counter that is decremented every time it is acquired and incremented every time it is released.
 
 A semaphore with a count of 1 is consider a #mutex.
 
-### Solution
+#### Solution
 ```python
 from threading import Semaphore
 
@@ -128,10 +165,10 @@ class Foo:
             printThird()
 ```
 
-## [Condition](https://docs.python.org/3/library/threading.html#condition-objects)
+### [Condition](https://docs.python.org/3/library/threading.html#condition-objects)
 A #condition variables are **synchronization primitives that enable threads to wait until a particular condition occurs**.
 
-### Solution
+#### Solution
 ```python
 from threading import Condition
 

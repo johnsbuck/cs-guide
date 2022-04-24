@@ -26,10 +26,15 @@
 ### Books
 1. Introduction to Algorithms
 
+## Data Management
+### Courses
+1. [MIT Data Management Workshop](https://ocw.mit.edu/courses/res-str-002-data-management-spring-2016/)
+
 ## Programming Languages & Language Construction
 ### Books
 1. Crafting Interpreters
 2. Introduction to Programming Languages
+3. The Go Programming Language
 
 ### Articles
 1. [(How to Write A (Lisp) Interpreter (in Python))](http://norvig.com/lispy.html)
@@ -38,6 +43,10 @@
 ## Computer Graphics
 ### Books
 1. Introduction to Computer Graphics
+
+# Math
+## Site
+1. [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python)
 
 ## Misc. References
 1. [betaveros's cheat sheet](http://c.vero.site/) ^refbetaveroscheatsheet

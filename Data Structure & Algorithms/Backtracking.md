@@ -1,11 +1,48 @@
+---
+tag:
+  - backtracking
+  - depth-first-search
+  - dfs
+  - algorithm
+---
+
 # Backtracking
+**Backtracking** uses recursion (or a stack) to explore a specific space in order to find one or multiple end conditions.
+
 > [!NOTE]
 > Backtracking is equivalent to **Depth-First Search (DFS)**.
+
+Backtracking and DFS search deeply, meaning they look at a given branch of nodes or states and travel backwards once they are unable to proceed further.
 
 > [!INFO]- References
 > [LeetCode Post](https://leetcode.com/problems/permutations/discuss/18239/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partioning))
 
 ## General Approach
+### Pseudocode
+The pseudocode example listed in Wikipedia is defined as the following:
+
+<pre>
+<b>procedure</b> backtrack(c) <b>is</b>
+    <b>if</b> reject(P, c) <b>then</b> return
+    <b>if</b> accept(P, c) <b>then</b> output(P, c)
+    s ← first(P, c)
+    <b>while</b> s ≠ NULL <b>do</b>
+        backtrack(s)
+        s ← next(P, s)
+</pre>
+
+If we compare this with the depth-first search (DFS) pseudocode, we find several similarities in recursive call, state/node searches, and checking if that state/node is available (`reject` and `w.discovered == true`).
+
+<pre>
+<b>procedure</b> DFS(G, v) <b>is</b>
+    label v as discovered
+    <b>for all</b> directed edges from v to w that are <b>in</b> G.adjacentEdges(v) <b>do</b>
+        <b>if</b> vertex w is not labeled as discovered <b>then</b>
+            recursively call DFS(G, w)
+</pre>
+
+The labeling process can be a class variable, a Wrapper class for the search, or some form of list/set that adds explored nodes as they viewed.
+
 ### [Examples](https://leetcode.com/problems/permutations/discuss/18239/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partioning))
 #### Subsets
 Given an integer array `nums` of **unique** elements, return _all possible subsets (the power set)_.
@@ -58,7 +95,7 @@ private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] 
 > [!NOTE]
 > Can improve backtracking by making nums into a list and checking if num is empty to add tempList to full list. Also removes tempList containing number check.
 
-### Combination Sums
+#### Combination Sums
 Given an array of **distinct** integers `candidates` and a target integer `target`, return _a list of all **unique combinations** of_ `candidates` _where the chosen numbers sum to_ `target`_._ You may return the combinations in **any order**.
 
 The **same** number may be chosen from `candidates` an **unlimited number of times**. Two combinations are unique if the frequency of at least one of the chosen numbers is different.
@@ -86,7 +123,7 @@ private void backtrack(List<List<Integer>> list, List<Integer> tempList, int [] 
 }
 ```
 
-### Palindrome Partitioning
+#### Palindrome Partitioning
 Given a string `s`, partition `s` such that every substring of the partition is a **palindrome**. Return all possible palindrome partitioning of `s`.
 
 A **palindrome** string is a string that reads the same backward as forward.
