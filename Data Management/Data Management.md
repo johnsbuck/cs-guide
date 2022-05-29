@@ -2,6 +2,7 @@
 ## Definition
 > [!INFO]- References
 > [Oracle Cloud Infrastructure](https://www.oracle.com/database/what-is-a-data-warehouse/)
+> [Oracle Cloud Infrastructure - What is Data Management](https://www.oracle.com/database/what-is-data-management/)
 
 Typical Data Warehouse Tools:
   * Database

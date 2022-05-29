@@ -209,3 +209,29 @@ $$
 $$
 A \times A = 0
 $$
+
+## Rotation Matrix
+> [!INFO]+ Reference
+> [Freya Holmér Explanation](https://www.youtube.com/watch?v=7j5yW5QDC2U)
+
+$$
+\displaylines{
+V = \begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+\\
+V^{'} = \begin{bmatrix}
+cos\theta & -sin\theta \\
+sin\theta & cos\theta
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+}
+$$
+## Line/Circle Intersection
+> [!INFO]+ References
+> [Freya Holmér Explanation](https://acegikmo.notion.site/Line-Circle-Intersection-0d259641b1b544e88557a61a9bd85d90)
+

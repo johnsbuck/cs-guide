@@ -495,9 +495,11 @@ func main() {
 ```
 
 ### Pointers to Struct
-| C       | Go  |
-| ------- | --- |
-| (\*p).X | p.X |
+|           | C       | Go        |
+| --------- | ------- | --------- |
+| Initiate  | T\* p   | var p \*T |
+| Assign    | p = \*x | p = &x    |
+| Attribute | (\*p).X | p.X       |
 
 ```go
 package main
@@ -824,6 +826,46 @@ func main() {
 
 func printSlice(s []int) {
 	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+```
+
+#### Index Insertion
+> [!INFO]- Reference
+> https://stackoverflow.com/questions/46128016/insert-a-value-in-a-slice-at-a-given-index
+
+```go
+a = append(a[:index+1], a[index:]...)
+a[index] = value
+```
+
+```go
+// 0 <= index <= len(a)
+func insert(a []int, index int, value int) []int {
+    if len(a) == index { // nil or empty slice or after last element
+        return append(a, value)
+    }
+    a = append(a[:index+1], a[index:]...) // index < len(a)
+    a[index] = value
+    return a
+}
+```
+
+#### Index Removal
+> [!INFO]- Reference
+> https://stackoverflow.com/questions/37334119/how-to-delete-an-element-from-a-slice-in-golang
+
+##### Order Matters
+```go
+func remove(slice []int, s int) []int {
+    return append(slice[:s], slice[s+1:]...)
+}
+```
+
+##### Order Does Not Matter
+```go
+func remove(s []int, i int) []int {
+    s[i] = s[len(s)-1]
+    return s[:len(s)-1]
 }
 ```
 
